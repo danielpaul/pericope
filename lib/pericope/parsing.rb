@@ -54,7 +54,9 @@ class Pericope
       segments
     end
 
-    def match_one(text)
+    def match_one(text, has_deuterocanonical_books)
+      @has_deuterocanonical_books = has_deuterocanonical_books
+
       match_all(text) do |attributes|
         return attributes
       end

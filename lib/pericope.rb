@@ -6,13 +6,15 @@ class Pericope
   extend Pericope::Parsing
   include Enumerable
 
-  attr_reader :book, :original_string, :ranges
+  attr_reader :book, :original_string, :ranges, :has_deuterocanonical_books
 
 
-  def initialize(arg)
+  def initialize(arg, has_deuterocanonical_books: false)
+    @has_deuterocanonical_books = has_deuterocanonical_books
+
     case arg
     when String
-      attributes = Pericope.match_one(arg)
+      attributes = Pericope.match_one(arg, has_deuterocanonical_books)
       raise ArgumentError, "no pericope found in #{arg}" if attributes.nil?
 
       @original_string = attributes[:original_string]
