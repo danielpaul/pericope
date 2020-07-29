@@ -316,23 +316,30 @@ class PericopeTest < Minitest::Test
 
       should "allow customizing :verse_range_separator" do
         assert_equal "John 1:1_7", Pericope.new("john 1:1-7").to_s(verse_range_separator: "_")
+        assert_equal "John 1:1_7", Pericope.new("john 1:1-7", has_deuterocanonical_books: true).to_s(verse_range_separator: "_")
       end
 
       should "allow customizing :chapter_range_separator" do
         assert_equal "John 1_3", Pericope.new("john 1-3").to_s(chapter_range_separator: "_")
+        assert_equal "John 1_3", Pericope.new("john 1-3", has_deuterocanonical_books: true).to_s(chapter_range_separator: "_")
       end
 
       should "allow customizing :verse_list_separator" do
         assert_equal "John 1:1_3", Pericope.new("john 1:1, 3").to_s(verse_list_separator: "_")
+        assert_equal "John 1:1_3", Pericope.new("john 1:1, 3", has_deuterocanonical_books: true).to_s(verse_list_separator: "_")
       end
 
       should "allow customizing :chapter_list_separator" do
         assert_equal "John 1:1_3:1", Pericope.new("john 1:1, 3:1").to_s(chapter_list_separator: "_")
+        assert_equal "John 1:1_3:1", Pericope.new("john 1:1, 3:1", has_deuterocanonical_books: true).to_s(chapter_list_separator: "_")
       end
 
       should "allow customizing :always_print_verse_range" do
         assert_equal "John 1", Pericope.new("john 1").to_s(always_print_verse_range: false)
         assert_equal "John 1:1–51", Pericope.new("john 1").to_s(always_print_verse_range: true)
+
+        assert_equal "John 1", Pericope.new("john 1", has_deuterocanonical_books: true).to_s(always_print_verse_range: false)
+        assert_equal "John 1:1–51", Pericope.new("john 1", has_deuterocanonical_books: true).to_s(always_print_verse_range: true)
       end
     end
   end
@@ -412,6 +419,7 @@ class PericopeTest < Minitest::Test
       should "accept an array of verses" do
         @tests.each do |expected_reference, verses|
           assert_equal expected_reference, Pericope.new(verses).to_s, "Given %w{#{verses.join(" ")}}"
+          assert_equal expected_reference, Pericope.new(verses, has_deuterocanonical_books: true).to_s, "Given %w{#{verses.join(" ")}}"
         end
       end
 
@@ -424,6 +432,7 @@ class PericopeTest < Minitest::Test
 
         tests.each do |(verses, ranges)|
           assert_equal ranges, Pericope.new(verses).ranges
+          assert_equal ranges, Pericope.new(verses, has_deuterocanonical_books: true).ranges
         end
       end
 
@@ -439,6 +448,7 @@ class PericopeTest < Minitest::Test
 
         tests.each do |(verses, expected_pericope)|
           assert_equal expected_pericope, Pericope.new(verses).ranges
+          assert_equal expected_pericope, Pericope.new(verses, has_deuterocanonical_books: true).ranges
         end
       end
     end
@@ -453,6 +463,10 @@ class PericopeTest < Minitest::Test
       should "raise an exception if pass an invalid verse" do
         assert_raises ArgumentError do
           Pericope.new([67001001])
+        end
+
+        assert_raises ArgumentError do
+          Pericope.new([67001001], has_deuterocanonical_books: true)
         end
       end
     end
